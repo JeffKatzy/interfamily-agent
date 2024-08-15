@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "ifs-sequel"
+version = "0.1.0"
+description = ""
+authors = ["Jeffrey Katz <JeffreyEricKatz@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+langchain-openai = "^0.1.21"
+langchain = "^0.2.14"
+python-dotenv = "^1.0.1"
+langchain-community = "^0.2.12"
+chainlit = "^1.1.402"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
