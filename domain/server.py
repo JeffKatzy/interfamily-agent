@@ -26,6 +26,15 @@ class Server:
             next_workflow_msg = workflow.get_next_message() or "Thank the user for the session."
             async for chunk in invoke_message_from(workflow.prompt(), next_workflow_msg):
                 yield chunk
+    
+    async def listen(self):
+        ai_text = "Hey there."
+        print(ai_text)
+        while True:
+            text_input = input("\n\nMe: ")
+            print("\nBot:")
+            async for chunk in self.route_from(text_input):
+                print(chunk, end="", flush=True)
 
     def log(self):
         history = get_session_history(**{"user_id": "123", "conversation_id": "1"})
