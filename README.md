@@ -2,10 +2,12 @@
 
 * Currently deployed at https://internalfamilysystems.ai/
 
-* Separates models from workflows (ie. views), to allow for separate logic from parsing and prompting.
-* Both sequenced and non-sequenced responses achieved via routing.
-* When sequenced workflow used, looks at skip logic of each question to see if step is complete.
-
+## Architecture:
+* Generic logic (mainly) abstracted to `lib` and custom logic in `domain`.  Goal is to just add new models and workflows and app will:
+    1. Routes between sequenced workflow and non-sequenced responses.
+    2. When workflow used, find next step by looking at skip logic of each question to see if step is complete (with help of `workflow_utils`).
+    3. Allow for separate logic from parsing (in models) and prompting (in workflows)
+    
 ## To run:
 
 * `git clone https://github.com/JeffKatzy/mvc-langchain`
