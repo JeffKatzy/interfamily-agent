@@ -1,30 +1,28 @@
-
 import chainlit as cl
 from dotenv import load_dotenv
-from langchain.prompts import ChatPromptTemplate
 from langchain.schema import StrOutputParser
-from langchain.schema.runnable import Runnable
 from langchain.schema.runnable.config import RunnableConfig
-from langchain_openai import ChatOpenAI
 
-from agent.memory_agent import agent
+from domain.models.part import Part
+from domain.server import Server
+from domain.workflows.part_workflow import PartWorkflow
 
 
 @cl.on_chat_start
 async def on_chat_start():    
-    runnable = agent | StrOutputParser()
-    cl.user_session.set("runnable", runnable)
+    # runnable = agent | StrOutputParser()
+    server = build_server()
+    cl.user_session.set("server", server)
 
 @cl.on_message
 async def on_message(message: cl.Message):
-    runnable = cl.user_session.get("runnable")
-
+    server = cl.user_session.get("server")
     msg = cl.Message(content="")
-
-    async for chunk in runnable.astream(
-        {"input": message.content},
-        config=RunnableConfig(configurable={"user_id": "123", "conversation_id": "1"}),
-    ):
+    async for chunk in server.route_from(message.content):
         await msg.stream_token(chunk)
 
     await msg.send()
+
+def build_server():
+    workflows = [ PartWorkflow(Part()) ]
+    return Server(workflows)
