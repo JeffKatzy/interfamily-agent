@@ -1,4 +1,4 @@
-MVC Langchain pattern implementation with chainlit 
+## MVC Langchain pattern implementation with chainlit 
 
 * Currently deployed at https://internalfamilysystems.ai/
 
@@ -6,7 +6,7 @@ MVC Langchain pattern implementation with chainlit
 * Both sequenced and non-sequenced responses achieved via routing.
 * When sequenced workflow used, looks at skip logic of each question to see if step is complete.
 
-To run:
+## To run:
 
 * `git clone https://github.com/JeffKatzy/mvc-langchain`
 * `cd mvc-langchain`
@@ -19,7 +19,7 @@ To run:
 Or run backend with:
 * `python3 -i backend_runner.py`
 
-Todo:
+### Todo:
 
 * Potentially refactor more with langchain
     * Refactor with langgraph state?  Does this slow it down?
