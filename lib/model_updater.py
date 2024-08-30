@@ -8,7 +8,7 @@ from langchain_core.runnables import ConfigurableFieldSpec
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from domain.store import get_session_history
-from lib.agent import llm
+from lib.agent import build_message_chain, llm
 
 
 def merge(current_details, new_details):
@@ -34,31 +34,7 @@ def parse_details(text_input, route_classes):
     ])
     
     runnable = prompt | llm.bind_tools(route_classes, tool_choice="any")
-    # TODO: Use other withmessagehistory
-    runnable_with_history = RunnableWithMessageHistory(
-        runnable,
-        get_session_history,
-        input_messages_key="input",
-        history_messages_key="history",
-        history_factory_config=[
-        ConfigurableFieldSpec(
-            id='user_id',
-            annotation=str,
-            name='User ID',
-            description='Unique identifier for the user.',
-            default='',
-            is_shared=True,
-        ),
-        ConfigurableFieldSpec(
-            id="conversation_id",
-            annotation=str,
-            name="Conversation ID",
-            description="Unique identifier for the conversation.",
-            default="",
-            is_shared=True,
-        ),
-        ]
-    )
+    runnable_with_history = build_message_chain(runnable, "input")
     parser = JsonOutputToolsParser()
     chain = runnable_with_history | parser
     runnable_res = runnable_with_history.invoke(
@@ -69,10 +45,9 @@ def parse_details(text_input, route_classes):
     return parser.invoke(runnable_res)
 
 def add_tool_message(runnable_res):
-    tool_call = runnable_res.tool_calls[0]
-    content = json.dumps(runnable_res.tool_calls[0]['args'])
-    tool_message = ToolMessage(content = content,
+    for tool_call in runnable_res.tool_calls:
+        content = json.dumps(tool_call['args'])
+        tool_message = ToolMessage(content = content,
                     tool_call_id = tool_call['id'])
-    history = get_session_history(**{"user_id": "123", "conversation_id": "1"})
-    
-    history.messages.append(tool_message)
+        history = get_session_history(**{"user_id": "123", "conversation_id": "1"})
+        history.messages.append(tool_message)

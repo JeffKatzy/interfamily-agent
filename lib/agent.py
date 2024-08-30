@@ -11,17 +11,17 @@ load_dotenv()
 llm = ChatOpenAI(temperature=0, model="gpt-4o-2024-08-06", streaming=True)
 
 async def invoke_message_from(prompt, input_message):
-        chain = build_message_chain(prompt, "input")
+        info_gathering_chain = prompt | llm
+        chain = build_message_chain(info_gathering_chain, "input")
         str_chain = chain | StrOutputParser()
         async for chunk in str_chain.astream(
             {"input": input_message},
             config={"configurable": {"user_id": "123", "conversation_id": "1"}}):
             yield chunk
 
-def build_message_chain(prompt, messages_key):
-    info_gathering_chain = prompt | llm
+def build_message_chain(chain, messages_key):
     return RunnableWithMessageHistory(
-        info_gathering_chain,
+        chain,
         get_session_history,
         input_messages_key=messages_key,
         history_messages_key="history",
