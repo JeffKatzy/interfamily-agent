@@ -1,4 +1,4 @@
-## Interfamily System Agent 
+## Internal Family Systems AI 
 
 Moves through the therapy workflow pioneered by Richard Schwartz.
 
