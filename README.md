@@ -1,4 +1,6 @@
-## MVC Langchain pattern implementation with chainlit 
+## Interfamily System Agent 
+
+Moves through the therapy workflow pioneered by Richard Schwartz.
 
 * Currently deployed at https://internalfamilysystems.ai/
 * AWS Fargate/ECS/Gateway
@@ -18,13 +20,13 @@ Or run backend with:
 
 ## Code Structure
 
-One goal was to allow both routing both routing between structured sequences (workflows) and general responses.
+Implemented routing using JSON parsing to route between structured questions in the therapy (workflow steps) and general questions from the user.
 
 <img src="https://jigsaw-labs-student.s3.amazonaws.com/request-response.png" width="90%"/>
 
-Incoming user messages are routed to either a general response or a sequenced **workflow**.  A workflow is the sequence of steps, that the agent responds with individually.  
+Incoming user messages are routed to either a general response or a sequenced **workflow**.  A workflow is the sequence of steps that the agent responds to individually.  
 
-It is essentially a ViewModel.  A workflow has many steps, and an application may have many workflows.
+A workflow is essentially a ViewModel.  A workflow has many steps, and an application may have many workflows.
 
 Each step in a workflow has it's own *skip* logic that indicates if the step is already complete.  This is often a combination of the state of the underlying model (eg. has the application parsed the related information) and the workflow itself (have we asked enough times.) 
 
