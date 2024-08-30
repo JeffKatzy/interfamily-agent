@@ -48,6 +48,13 @@ class Part(BaseModel):
 
 The `BaseWorkflow` class's `get_next_message` function will call each `skip` procedure in sequence, until reaching what is yet to be completed.
 
+```python
+def get_next_message(self):
+        for field, attrs in self.dict().items():
+            if attrs.get('skip') and not attrs['skip'](self):
+                return attrs['prompt']
+```
+
 Additional workflows are added by adding them to the `Server`.  
 
 ```python
@@ -64,7 +71,5 @@ Organizing this way (I hope) helps to achieve the following:
 
 ### Todo:
 
-* Potentially refactor more with langchain
-    * Refactor with langgraph state?  Does this slow it down?
 * Still should look into Zep for output parsing
 * Look at Cerebras for latency
