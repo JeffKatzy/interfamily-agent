@@ -55,6 +55,13 @@ def get_next_message(self):
                 return attrs['prompt']
 ```
 
+For example:
+
+```python
+service = PartWorkflow(Part())
+service.get_next_message() 
+# Ask if there's a feeling, struggle, thought pattern...
+```
 Additional workflows are added by adding them to the `Server`.  
 
 ```python
@@ -63,7 +70,7 @@ server = Server(workflows)
 asyncio.run(server.listen())
 ```
 
-Organizing this way (I hope) helps to achieve the following:
+Organizing this way hopes to achieve the following:
 
 * Add additional steps by defining additional workflows, their related steps (along with skip logic) and any changes to the model layer (data to be parsed/captured).
 * Isolate model from views.  Not everything we want the bot to say needs a related update to the model layer.  The model layer should represent the domain.
