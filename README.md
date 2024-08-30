@@ -16,13 +16,15 @@
 Or run backend with:
 * `python3 -i backend_runner.py`
 
-## Architecture:
+## Code Structure
+
+One goal was to allow both routing both routing between structured sequences (workflows) and general responses.
 
 <img src="https://jigsaw-labs-student.s3.amazonaws.com/request-response.png" width="90%"/>
 
+Incoming user messages are routed to either a general response or a sequenced **workflow**.  A workflow is the sequence of steps, that the agent responds with individually.  
 
-Incoming user messages are routed to either a general response or a sequenced workflow.
-A *workflow* is the sequence of steps, that the agent responds with individually.  It is essentially a ViewModel.  Each application may have many workflows.
+It is essentially a ViewModel.  A workflow has many steps, and an application may have many workflows.
 
 Each step in a workflow has it's own *skip* logic that indicates if the step is already complete.  This is often a combination of the state of the underlying model (eg. has the application parsed the related information) and the workflow itself (have we asked enough times.) 
 
@@ -51,6 +53,12 @@ workflows = [ PartWorkflow(Part())]
 server = Server(workflows)
 asyncio.run(server.listen())
 ```
+
+Organizing this way (I hope) helps to achieve the following:
+
+* Add additional steps by defining additional workflows, their related steps (along with skip logic) and any changes to the model layer (data to be parsed/captured).
+* Isolate model from views.  Not everything we want the bot to say needs a related update to the model layer.  The model layer should represent the domain.
+* Keep logic about whether each step is complete (and should be skipped) with the step declaration.  And allow this logic to be flexible.
 
 ### Todo:
 
