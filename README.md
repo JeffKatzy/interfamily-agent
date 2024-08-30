@@ -28,9 +28,9 @@ Incoming user messages are routed to either a general response or a sequenced **
 
 A workflow is essentially a ViewModel.  A workflow has many steps, and an application may have many workflows.
 
-Each step in a workflow has it's own *skip* logic that indicates if the step is already complete.  This is often a combination of the state of the underlying model (eg. has the application parsed the related information) and the workflow itself (have we asked enough times.) 
+Each step in a workflow has it's own *skip* logic that indicates if the step is already complete.  This is often a combination of the state of the underlying model (eg. the parsed information from the agent) and the workflow itself (eg. have we asked enough times and should move on.)
 
-For example, the bot gets the next step by checking off the steps in sequence to look if the `skip` lambda function returns True.  It's looking at the related model  to see if it has the information it needs.
+For example, the bot finds the next step by checking off the steps in sequence to look if the `skip` lambda function returns `True`.  And to execute the lambda, it looks at the related model to see if it has already gathered the related information.
 
 ```python
 class PartWorkflow(BaseWorkflow):
