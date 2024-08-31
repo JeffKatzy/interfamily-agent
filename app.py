@@ -23,6 +23,23 @@ async def on_message(message: cl.Message):
 
     await msg.send()
 
+@cl.set_starters
+async def set_starters():
+    return [
+        cl.Starter(
+            label="Start a session",
+            message="Let's start a session.",
+            ),
+        cl.Starter(
+            label="What is IFS?",
+            message="What is IFS?",
+            ),
+        cl.Starter(
+            label="Is this therapy?",
+            message="Does this application count as therapy?",
+            )
+        ]
+
 def build_server():
     workflows = [ PartWorkflow(Part()) ]
     return Server(workflows)
