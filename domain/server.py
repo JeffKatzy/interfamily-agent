@@ -39,3 +39,7 @@ class Server:
     def log(self):
         history = get_session_history(**{"user_id": "123", "conversation_id": "1"})
         print(history.messages[-2:])
+        
+def build_server():
+    workflows = [ PartWorkflow(Part()) ]
+    return Server(workflows)

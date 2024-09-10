@@ -1,0 +1,37 @@
+<html>
+    <body>
+        <form action="">
+            <textarea id="input" name="prompt" placeholder="Enter your message"></textarea>
+            <button type="submit" id="submit">Submit</button>
+        </form>
+        <pre id="body"></pre>
+        <script>
+            const body = document.getElementById('body');
+            const submitButton = document.querySelector('button');
+            const input = document.querySelector('textarea');
+
+            submitButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                const response = await fetch('/answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({message: input.value })
+                });
+                
+                const reader = response.body.getReader();
+                let output = "";
+                while (true){
+                    const {done, value} = await reader.read();
+                    output += new TextDecoder().decode(value);
+                    body.innerHTML = output;
+                    if (done) {
+                        return;
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

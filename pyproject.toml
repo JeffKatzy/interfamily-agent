@@ -15,6 +15,11 @@ langchain-community = "^0.2.12"
 chainlit = "^1.1.402"
 langchain_core = "*"
 asyncio  = "*"
+flask = "*"
+flask-cors = "*"
+hypercorn = "*"
+quart = "*"
+quart-cors = "*"
 
 [build-system]
 requires = ["poetry-core"]
