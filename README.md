@@ -13,7 +13,9 @@ Moves through the therapy workflow pioneered by Richard Schwartz.
 * `poetry install`
 * `mv .env.example .env`
 * Add your openai api key, and add abs path to the project in PYTHON_PATH
-* `chainlit run app.py`
+* To run as flask api that connects to [frontend-interfamily-agent](https://github.com/JeffKatzy/frontend-interfamily-agent), (or with very simple html frontend at localhost:8000) run `python3 main.py`
+
+* To run as chainlit app, run `chainlit run app.py`
 
 Or run backend with:
 * `python3 -i backend_runner.py`
