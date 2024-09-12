@@ -1,4 +1,8 @@
+import asyncio
+
 from dotenv import load_dotenv
+from hypercorn.asyncio import serve
+from hypercorn.config import Config
 from openai import OpenAI
 from quart import Quart, Response, render_template, request
 from quart_cors import cors
@@ -25,8 +29,11 @@ async def answer():
         async for chunk in server.route_from(message):
             if chunk:
                 yield f"data: {chunk}\n\n"
-        yield "data: [DONE]\n\n"
     return Response(generate_answer(), content_type='text/event-stream')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+if __name__ == "__main__":
+    config = Config()
+    config.bind = ["0.0.0.0:8000"]
+
+    asyncio.run(serve(app, config))
