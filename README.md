@@ -7,8 +7,8 @@ Moves through the therapy workflow pioneered by Richard Schwartz.
 
 ## Start it up:
 
-* `git clone https://github.com/JeffKatzy/mvc-langchain`
-* `cd mvc-langchain`
+* `git clone https://github.com/JeffKatzy/interfamily-agent`
+* `cd interfamily-agent`
 * `poetry shell`
 * `poetry install`
 * `mv .env.example .env`
