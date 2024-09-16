@@ -9,13 +9,13 @@ from domain.prompt import system_message
 class WField(BaseModel):
     prompt: str
     skip: Optional[Callable] = None
-    was_asked: int = 0
+    invoked: int = 0
 
 class BaseWorkflow(BaseModel):
     def next_message_prompt():
         return ChatPromptTemplate.from_messages(
         [("system", system_message),
-        MessagesPlaceholder(variable_name="history"),
+        MessagesPlaceholder(variable_name="messages"),
         ("human", "suggested next question: {input}"),
         ])
 
@@ -32,3 +32,9 @@ class BaseWorkflow(BaseModel):
     @property
     def model(self):
         return self._model
+
+    def is_done(self):
+        for field, attrs in self.dict().items():
+            if attrs.get('skip') and not attrs['skip'](self):
+                return False
+        return True

@@ -12,7 +12,7 @@ class PartWorkflow(BaseWorkflow):
                         skip=lambda view: bool(view._model.aware_of_part))
     ask_feeling_towards_part: WField = WField(prompt = "Ask how they feels towards the target part.  For example, are they ok with the part being there?",
                                 skip=lambda view: bool(view._model.feeling_to_part))
-    unblend_from_part: WField = WField(prompt = "If the user feels negative qualities towards the part, ask if that part that feels negative can take a step back during the session so that we can approach from a more compassionate place.", 
+    unblend_from_part: WField = WField(prompt = "If the user feels negative qualities towards the target part, ask if that part that feels negative to the target part can take a step back during the session so that we can get to know the target part better.", 
                                     skip=lambda view: bool(view._model.achieved_unblending))
     see_if_more_compassionate: WField = WField(prompt = "Ask how the user feels now that they've unblended from the part.",
                                 skip=lambda view: bool(view._model.has_compassion_towards_part))

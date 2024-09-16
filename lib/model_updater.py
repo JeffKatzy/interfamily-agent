@@ -16,7 +16,7 @@ def merge(current_details, new_details):
     updated_details = current_details.copy(update=non_empty_details)
     return updated_details
 
-def parse_details(text_input, route_classes):
+def parse_details(text_input, route_classes, user_id, session_id):
     prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -29,7 +29,7 @@ def parse_details(text_input, route_classes):
             Do not use the IFSPart parser if you are unsure.  We can always ask the user for more clarification.
             """,
         ),
-        MessagesPlaceholder(variable_name="history"),
+        MessagesPlaceholder(variable_name="messages"),
         ("human", "{input}"),
     ])
     
@@ -39,15 +39,15 @@ def parse_details(text_input, route_classes):
     chain = runnable_with_history | parser
     runnable_res = runnable_with_history.invoke(
         {"input": text_input},
-        config={"configurable": {"user_id": "123", "conversation_id": "1"}}
+        config={"configurable": {"user_id": user_id, "session_id": session_id}}
     )
-    add_tool_message(runnable_res)
+    add_tool_message(runnable_res, user_id, session_id)
     return parser.invoke(runnable_res)
 
-def add_tool_message(runnable_res):
+def add_tool_message(runnable_res, user_id, session_id):
     for tool_call in runnable_res.tool_calls:
         content = json.dumps(tool_call['args'])
         tool_message = ToolMessage(content = content,
                     tool_call_id = tool_call['id'])
-        history = get_session_history(**{"user_id": "123", "conversation_id": "1"})
+        history = get_session_history(user_id, session_id)
         history.messages.append(tool_message)

@@ -82,3 +82,5 @@ Organizing this way hopes to achieve the following:
 
 * Still should look into Zep for output parsing
 * Look at Cerebras for latency
+* Have dynamic updates of prompt based on workflow state
+* Use different model for parsing vs generation
