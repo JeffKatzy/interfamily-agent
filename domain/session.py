@@ -24,15 +24,14 @@ class Session:
     def get(self, key, default=None):
         return self.__dict__.get(key, default)
 
-    @property
-    def current_workflow(self):
-        prev_workflow = self._current_workflow
-        if prev_workflow.is_done():
-            self._current_workflow = self.workflows[self.workflows.index(prev_workflow) + 1]
+    
+    def get_current_workflow(self):
+        if self._current_workflow.is_done():
+            self._current_workflow = self.workflows[self.workflows.index(self._current_workflow) + 1]
         return self._current_workflow
     
-    @current_workflow.setter
-    def current_workflow(self, workflow):
+    
+    def set_current_workflow(self, workflow):
         self._current_workflow = workflow
 
 
@@ -40,6 +39,7 @@ def start_new_session(user_id: str, session_id: str = ""):
     if not session_id:
         session_id = str(uuid.uuid4())
     workflows = [ UserIntroWorkflow(UserIntro()), PartWorkflow(Part()) ]
+    
     session = Session(user_id, session_id, workflows, ChatMessageHistory())
     add_session_to_store(session)
     return session

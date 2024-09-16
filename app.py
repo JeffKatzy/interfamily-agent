@@ -18,7 +18,7 @@ async def on_chat_start():
 async def on_message(message: cl.Message):
     server = cl.user_session.get("server")
     msg = cl.Message(content="")
-    async for chunk in server.route_from(message.content):
+    async for chunk in server.get_response_from(message.content):
         await msg.stream_token(chunk)
 
     await msg.send()

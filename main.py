@@ -26,7 +26,7 @@ async def answer():
     message = data.get('message')
     
     async def generate_answer():
-        async for chunk in server.route_from(message, user_id='1', session_id='10'):
+        async for chunk in server.get_response_from(message, user_id='1', session_id='10'):
             if chunk:
                 yield f"data: {chunk}\n\n"
     return Response(generate_answer(), content_type='text/event-stream')

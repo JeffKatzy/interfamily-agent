@@ -17,3 +17,6 @@ class UserIntroWorkflow(BaseWorkflow):
     
     def prompt(self):
         return next_message_prompt
+    
+    def is_done(self):
+        return self._model.initial_session_request
