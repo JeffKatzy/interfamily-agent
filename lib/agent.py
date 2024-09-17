@@ -12,17 +12,14 @@ fine_tune_model = "" #"ft:gpt-4o-mini-2024-07-18:personal::A76mvjnr"
 model_id = "gpt-4o-2024-08-06"
 llm = ChatOpenAI(temperature=0, model=model_id, streaming=True)
 
-async def invoke_message_from(prompt, input_message, user_id, session_id):
-        info_gathering_chain = prompt | llm
-        chain = build_message_chain(info_gathering_chain, "input")
-        str_chain = chain | StrOutputParser()
+def build_chain(prompt):
+    qa_chain = prompt | llm
+    chain = build_runnable(qa_chain, "input")
+    str_chain = chain | StrOutputParser()
+    return str_chain
         
-        async for chunk in str_chain.astream(
-            {"input": input_message},
-            config={"configurable": {"user_id": user_id, "session_id": session_id}}):
-            yield chunk
 
-def build_message_chain(chain, messages_key):
+def build_runnable(chain, messages_key):
     return RunnableWithMessageHistory(
         chain,
         get_session_history,

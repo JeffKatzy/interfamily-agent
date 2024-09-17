@@ -8,7 +8,7 @@ from langchain_core.runnables import ConfigurableFieldSpec
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from domain.store import get_session_history
-from lib.agent import build_message_chain, llm
+from lib.agent import build_runnable, llm
 
 
 def merge(current_details, new_details):
@@ -34,7 +34,7 @@ def parse_details(text_input, route_classes, user_id, session_id):
     ])
     
     runnable = prompt | llm.bind_tools(route_classes, tool_choice="any")
-    runnable_with_history = build_message_chain(runnable, "input")
+    runnable_with_history = build_runnable(runnable, "input")
     parser = JsonOutputToolsParser()
     chain = runnable_with_history | parser
     runnable_res = runnable_with_history.invoke(

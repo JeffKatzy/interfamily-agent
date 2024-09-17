@@ -1,11 +1,13 @@
 import asyncio
 
+from langchain_community.adapters.openai import convert_openai_messages
+
 from domain.models.general_response import GeneralResponse
 from domain.models.part import Part
 from domain.models.user_intro import UserIntro
 from domain.prompt import general_message_prompt
 from domain.session import find_or_create_session
-from lib.agent import invoke_message_from
+from lib.agent import build_chain
 from lib.model_updater import merge, parse_details
 
 
@@ -14,11 +16,14 @@ class Server:
         session = find_or_create_session(user_id, session_id)
         session_id = session.session_id
         output_json = parse_details(user_message, [UserIntro, Part, GeneralResponse], user_id, session_id)[0]
-        
         prompt, next_message = self.route_from(output_json, user_message, session)
-
-        async for chunk in invoke_message_from(prompt, next_message,  user_id, session_id):
+        str_chain = build_chain(prompt)
+        
+        async for chunk in str_chain.astream(
+            {"input": next_message},
+            config={"configurable": {"user_id": user_id, "session_id": session_id}}):
             yield chunk
+        
 
     def route_from(self, output_json, user_message, session):
         if output_json['type'] == 'GeneralResponse':
