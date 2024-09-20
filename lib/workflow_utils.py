@@ -24,10 +24,11 @@ class BaseWorkflow(BaseModel):
         return "\n".join([f"{i + 1}. {prompt}"
          for i, prompt in indexed_prompts])
 
-    def get_next_message(self):
+    def get_next_step(self):
+        """Iterate through fields.  Iff skip function not satisfied, then it's the next step."""
         for field, attrs in self.dict().items():
-            if attrs.get('skip') and not attrs['skip'](self):
-                return attrs['prompt']
+            if not attrs['skip'](self): 
+                return getattr(self, field)
                 
     @property
     def model(self):

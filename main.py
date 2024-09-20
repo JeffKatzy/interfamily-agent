@@ -22,11 +22,13 @@ async def index():
 
 @app.route('/answer', methods=['GET','POST'])
 async def answer():
-    data = await request.get_json()
-    message = data.get('message')
     
+    data = await request.get_json()
+    text_input = data.get('message')
+    user_id = '1'
     async def generate_answer():
-        async for chunk in server.get_response_from(message, user_id='1', session_id='10'):
+        prompt, next_message, session_id = server.get_prompt_and_inputs(text_input, user_id)
+        async for chunk in server.invoke_stream(prompt, next_message, user_id, session_id):
             if chunk:
                 yield f"data: {chunk}\n\n"
     return Response(generate_answer(), content_type='text/event-stream')

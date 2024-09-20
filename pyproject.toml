@@ -20,6 +20,9 @@ flask-cors = "*"
 hypercorn = "*"
 quart = "*"
 quart-cors = "*"
+langsmith = "^0.1.121"
+rapidfuzz = "*"
+pytest = "^8.3.3"
 
 [build-system]
 requires = ["poetry-core"]

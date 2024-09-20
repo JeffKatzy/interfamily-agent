@@ -5,8 +5,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from domain.models.part import Part
 from domain.models.user_intro import UserIntro
 from domain.store import add_session_to_store, get_session
-from domain.workflows.part_workflow import PartWorkflow
-from domain.workflows.user_intro_workflow import UserIntroWorkflow
+from domain.workflows import PartWorkflow, UserIntroWorkflow, UserOutroWorkflow
 
 
 class Session:
@@ -24,22 +23,23 @@ class Session:
     def get(self, key, default=None):
         return self.__dict__.get(key, default)
 
-    
     def get_current_workflow(self):
-        if self._current_workflow.is_done():
-            self._current_workflow = self.workflows[self.workflows.index(self._current_workflow) + 1]
+        current_index = self.workflows.index(self._current_workflow)
+        if self._current_workflow.is_done() and self.is_next_workflow(current_index):
+            self._current_workflow = self.workflows[current_index + 1]
         return self._current_workflow
-    
-    
+
+    def is_next_workflow(self, current_index):
+        next_index = current_index + 1
+        return next_index < len(self.workflows)
+
     def set_current_workflow(self, workflow):
         self._current_workflow = workflow
 
+def start_new_session(user_id: str, session_id: str = "", workflows = []):
+    workflows = workflows or [ UserIntroWorkflow(UserIntro()), PartWorkflow(Part()) ]
+    session_id = session_id or str(uuid.uuid4())
 
-def start_new_session(user_id: str, session_id: str = ""):
-    if not session_id:
-        session_id = str(uuid.uuid4())
-    workflows = [ UserIntroWorkflow(UserIntro()), PartWorkflow(Part()) ]
-    
     session = Session(user_id, session_id, workflows, ChatMessageHistory())
     add_session_to_store(session)
     return session
