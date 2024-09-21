@@ -8,10 +8,12 @@ from domain.workflows import PartWorkflow, UserIntroWorkflow
 
 load_dotenv()
 
+
 def test_user_intro_workflow_and_properly_exits_when_done():
-    server = Server()
+    
     workflows = [UserIntroWorkflow(UserIntro())]
     user_id = "1"
+    server = Server()
     session = start_new_session(workflows=workflows, user_id=user_id)
     session_id = session.session_id
     
