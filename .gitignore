@@ -8,7 +8,7 @@ __pycache__/
 *$py.class
 # C extensions
 *.so
-
+.deepeval
 # Distribution / packaging
 .Python
 build/

@@ -5,11 +5,13 @@ from datetime import datetime, timedelta
 
 from langsmith import Client
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 sys.path.insert(0, project_root)
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
 client = Client()
 
 def get_runs_by_session_id(session_id, project_name = "ifs-development"):
