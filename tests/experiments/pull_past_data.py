@@ -12,11 +12,9 @@ from dotenv import load_dotenv
 load_dotenv()
 client = Client()
 
-start_time = datetime.utcnow() - timedelta(days=2)
-
-def get_runs_by_session_id(session_id):
+def get_runs_by_session_id(session_id, project_name = "ifs-development"):
     return list(client.list_runs(
-    project_name="ifs-development",
+    project_name=project_name,
     filter=f"and(eq(metadata_key, 'session_id'), eq(metadata_value, '{session_id}'))"
     ))
 
@@ -34,7 +32,6 @@ def get_all_run_types(runs):
     return run_types
 
 def get_messages(message_runs):
-    
     for message_run in message_runs:
         if messages := message_run.inputs.get('messages'):
             break
@@ -49,8 +46,14 @@ def get_messages(message_runs):
 def get_run_by_id(run_ids):
     return list(client.list_runs(id=run_ids))[0]
 
-run = get_run_by_id(run_ids = ["c110fd90-e8d5-4078-ab63-315f6530e683"])
-session_id = run.extra['metadata']['session_id']
-runs_by_session_id = get_runs_by_session_id(session_id)
-message_runs = get_message_runs(runs_by_session_id)
-messages = get_messages(message_runs)
+def get_messages_from_run_ids(run_ids):
+    run = get_run_by_id(run_ids = run_ids)
+    session_id = run.extra['metadata']['session_id']
+    runs_by_session_id = get_runs_by_session_id(session_id)
+    message_runs = get_message_runs(runs_by_session_id)
+    messages = get_messages(message_runs)
+    return messages
+
+if __name__ == '__main__':
+    run_ids = ["c110fd90-e8d5-4078-ab63-315f6530e683"]
+    messages = get_messages_from_run_ids(run_ids)

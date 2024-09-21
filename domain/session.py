@@ -5,7 +5,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from domain.models.part import Part
 from domain.models.user_intro import UserIntro
 from domain.store import add_session_to_store, get_session
-from domain.workflows import PartWorkflow, UserIntroWorkflow, UserOutroWorkflow
+from domain.workflows import PartWorkflow, UserIntroWorkflow
 
 
 class Session:

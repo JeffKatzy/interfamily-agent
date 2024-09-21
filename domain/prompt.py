@@ -32,3 +32,19 @@ general_message_prompt = ChatPromptTemplate.from_messages(
         MessagesPlaceholder(variable_name="messages"),
         ("human", "{input}")
     ])
+
+parse_details_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are here to parse part information someone providing IFS therapy information.  
+            If they are providing part information use the IFSPart. 
+            If you feel you do not have the information, do not guess, just leave it blank.
+            If the user asks a question about IFS, or does not answer the question, use the
+            GeneralResponse object to parse.
+            Do not use the IFSPart parser if you are unsure.  We can always ask the user for more clarification.
+            """,
+        ),
+        MessagesPlaceholder(variable_name="messages"),
+        ("human", "{input}"),
+    ])

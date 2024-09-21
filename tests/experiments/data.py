@@ -3,7 +3,7 @@ examples = [
     {
         "inputs": {
             "input": "Introduce yourself and your role as an IFS coach. Ask if they have questions about IFS or want to start a session.",
-            "messages": messages,
+            "messages": [{"role": "user", "content": "Hello"}]
         },
         "outputs": {
             "answer": """Hello! I'm here to help you practice Internal Family Systems (IFS) therapy.
@@ -13,19 +13,7 @@ examples = [
     {
         "inputs": {
             "input": "Introduce yourself and your role as an IFS coach. Ask if they have questions about IFS or want to start a session.",
-            "messages": [{"role": "user",
-            "content": "Hello"}]
-        },
-        "outputs": {
-            "answer": """Hello! I'm here to help you practice Internal Family Systems (IFS) therapy.
-            Do you have any questions about IFS, or would you like to start a session?""",
-        },
-    },
-    {
-        "inputs": {
-            "input": "Introduce yourself and your role as an IFS coach. Ask if they have questions about IFS or want to start a session.",
-            "messages": [{"role": "user",
-            "content": "Hey, what's up?"}]
+            "messages": [{"role": "user", "content": "Hey, what's up?"}]
         },
         "outputs": {
             "answer": """Hello! I'm here to help you practice Internal Family Systems (IFS) therapy.

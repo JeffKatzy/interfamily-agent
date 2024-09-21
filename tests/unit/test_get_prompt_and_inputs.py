@@ -4,7 +4,7 @@ from domain.models import Part, UserIntro
 from domain.server import Server
 from domain.session import start_new_session
 from domain.store import get_session
-from domain.workflows import PartWorkflow, UserIntroWorkflow, UserOutroWorkflow
+from domain.workflows import PartWorkflow, UserIntroWorkflow
 
 load_dotenv()
 

@@ -7,8 +7,6 @@ from domain.models import GeneralResponse, Part, UserIntro
 from domain.session import find_or_create_session
 from lib.model_updater import parse_details
 
-# todo, store prompt 
-# 
 
 @pytest.fixture
 def setup_session():
