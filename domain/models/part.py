@@ -1,6 +1,5 @@
 from langchain_core.pydantic_v1 import BaseModel, Field
 
-
 class Part(BaseModel):
     part: str = Field("",
         description="A feeling, struggle, thought pattern, or part they encounter.")

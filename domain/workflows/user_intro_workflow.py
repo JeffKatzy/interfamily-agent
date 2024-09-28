@@ -2,7 +2,6 @@ from domain.models.user_intro import UserIntro
 from domain.prompt import next_message_prompt
 from lib.workflow_utils import BaseWorkflow, WField
 
-
 class UserIntroWorkflow(BaseWorkflow):
     _model: UserIntro
 

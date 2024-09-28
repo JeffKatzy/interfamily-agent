@@ -1,13 +1,6 @@
-import asyncio
-
-from langchain_community.adapters.openai import convert_openai_messages
-
-from domain.models.general_response import GeneralResponse
-from domain.models.part import Part
-from domain.models.user_intro import UserIntro
+from domain.models import GeneralResponse, Part, UserIntro
 from domain.prompt import general_message_prompt
 from domain.session import find_or_create_session
-from domain.store import get_session_history
 from lib.agent import build_chain
 from lib.model_updater import merge, parse_details
 from lib.workflow_utils import WField

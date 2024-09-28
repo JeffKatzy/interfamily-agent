@@ -2,7 +2,6 @@ from domain.models.part import Part
 from domain.prompt import next_message_prompt
 from lib.workflow_utils import BaseWorkflow, WField
 
-
 class PartWorkflow(BaseWorkflow):
     _model: Part
 
