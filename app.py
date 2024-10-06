@@ -41,5 +41,5 @@ async def set_starters():
         ]
 
 def build_server():
-    workflows = [ PartWorkflow(Part()) ]
+    workflows = [] # [ PartWorkflow(Part()) ]
     return Server(workflows)

@@ -1,9 +1,15 @@
+from __future__ import annotations
+
+from typing import Any
+
 from domain.models.user_intro import UserIntro
 from domain.prompt import next_message_prompt
-from lib.workflow_utils import BaseWorkflow, WField
+from lib.base_workflow import BaseWorkflow, WField
+
 
 class UserIntroWorkflow(BaseWorkflow):
     _model: UserIntro
+    session: Any
 
     say_hi: WField = WField(prompt="Introduce yourself and your role as an IFS coach. Ask if they have questions about IFS or want to start a session.",
         skip=lambda view: bool(view.say_hi.invoked))

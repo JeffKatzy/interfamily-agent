@@ -1,18 +1,20 @@
 import uuid
+
 from langchain_community.chat_message_histories import ChatMessageHistory
+
 from domain.models import Part, UserIntro
 from domain.store import add_session_to_store, get_session
 from domain.workflows import PartWorkflow, UserIntroWorkflow
 
 
 class Session:
-    def __init__(self, user_id, session_id, workflows, history):
+    def __init__(self, user_id, session_id, workflows = [], history = ChatMessageHistory()):
         self.workflows = workflows
         self.user_id = user_id
         self.session_id = session_id
         self.history = history
         self.ended = False
-        self._current_workflow = workflows[0]
+        
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -33,11 +35,22 @@ class Session:
     def set_current_workflow(self, workflow):
         self._current_workflow = workflow
 
+    @property
+    def workflows(self):
+        return self._workflows
+    
+    @workflows.setter
+    def workflows(self, workflows):
+        self._workflows = workflows
+        self._current_workflow = workflows and workflows[0]
+        
 def start_new_session(user_id: str, session_id: str = "", workflows = []):
-    workflows = workflows or [ UserIntroWorkflow(UserIntro()), PartWorkflow(Part()) ]
+    
     session_id = session_id or str(uuid.uuid4())
 
-    session = Session(user_id, session_id, workflows, ChatMessageHistory())
+    session = Session(user_id, session_id, history = ChatMessageHistory())
+    session.workflows = [ UserIntroWorkflow(UserIntro(), session = session),
+                          PartWorkflow(Part(), session = session) ]
     add_session_to_store(session)
     return session
 

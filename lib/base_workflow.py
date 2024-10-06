@@ -1,15 +1,19 @@
+import asyncio
 from typing import Callable, Optional
 
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from pydantic import BaseModel
 
 from domain.prompt import system_message
+from domain.store import clients
 
 
 class WField(BaseModel):
     prompt: str
-    skip: Optional[Callable] = None
+    skip: Optional[Callable] = ...
+    then: Optional[Callable] = None
     invoked: int = 0
+
 
 class BaseWorkflow(BaseModel):
     def next_message_prompt():
@@ -24,11 +28,18 @@ class BaseWorkflow(BaseModel):
         return "\n".join([f"{i + 1}. {prompt}"
          for i, prompt in indexed_prompts])
 
-    def get_next_step(self):
-        """Iterate through fields.  Iff skip function not satisfied, then it's the next step."""
-        for field, attrs in self.dict().items():
-            if not attrs['skip'](self): 
-                return getattr(self, field)
+    def steps(self):
+        return {field:attrs for field, attrs in self.dict().items() if field != 'session'}
+
+    async def get_next_step(self):
+        """Iterate through fields.  If skip function not satisfied, then it's the next step."""
+        for field, attrs in self.steps().items():
+            if not attrs['skip'](self):
+                if attrs.get('then'):
+                    
+                    image_obj = attrs['then'](self)
+                    asyncio.create_task(image_obj.run(self.session, clients))
+                return getattr(self, field) # call next step
                 
     @property
     def model(self):

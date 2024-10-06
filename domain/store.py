@@ -1,7 +1,7 @@
 from langchain_core.chat_history import BaseChatMessageHistory
 
 store = {}
-
+clients = {}
 def get_session(user_id: str, session_id: str = '') -> dict or None:
     if user_id and session_id:
         return store.get(user_id, {}).get(session_id, None)
