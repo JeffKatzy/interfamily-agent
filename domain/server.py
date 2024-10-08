@@ -1,4 +1,4 @@
-from domain.models import GeneralResponse, Part, UserIntro
+from domain.models import GeneralResponse, Part, Unblending, UserIntro
 from domain.prompt import general_message_prompt
 from domain.session import find_or_create_session
 from lib.agent import build_chain
@@ -11,13 +11,14 @@ class Server:
         session = find_or_create_session(user_id, session_id)
         session_id = session.session_id
 
-        output_json = parse_details(user_message, [UserIntro, Part, GeneralResponse],
+        output_json = parse_details(user_message, [UserIntro, Unblending, Part, GeneralResponse],
                                    user_id, session_id)[0]
         prompt, next_message = await self.route_from(output_json, user_message, session)
         return prompt, next_message, session_id
 
     async def invoke_stream(self, prompt, next_message, user_id, session_id):
         chain = build_chain(prompt)
+        print('calling invoke stream')
         async for chunk in chain.astream({"input": next_message},
             config={"configurable": {"user_id": user_id, "session_id": session_id}}):
             yield chunk
@@ -34,6 +35,7 @@ class Server:
         else:
             current_workflow = session.get_current_workflow()
             current_workflow._model = merge(current_workflow.model, output_json['args'])
+            print('current_model', current_workflow.model.dict())
             updated_workflow = session.get_current_workflow()
             next_workflow_step = await updated_workflow.get_next_step() or WField(prompt="Thank user for the session.")
             next_workflow_step.invoked += 1

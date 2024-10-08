@@ -2,17 +2,10 @@ from langchain_core.pydantic_v1 import BaseModel, Field
 
 
 class Part(BaseModel):
-    part: str = Field("",
-        description="A feeling, struggle, thought pattern, or part they encounter.")
-    aware_of_part: str = Field("",
-        description="Physical feeling of part or the sense of the part.  For example, a pain the neck or tightness in the jaw.")
-    feeling_to_part: str = Field("",
-        description="Emotion or response towards the primary part")
     description_of_part: str = Field("",
         description="How does the user describe the part?")
-    agreed_can_step_back: bool = Field("", description = "Has the user agreed to the part judging the target part to take a step back during the session.")
-    achieved_unblending: bool = Field("", description = """Achieved unblending if feels compassion or warmth towards the part.""")
-    has_compassion_towards_part: bool = Field("", description = """Has the user expressed a degree of compassion, understanding, or warmth, or sympathy towards the part.""")
-    shared_feelings: bool = Field("", description = """Was the user able to share its compassion towards the part.""")
-    
-    
+    emotion_of_part: str = Field("", description = """What emotion does the user describe the part as feeling. Eg. angry, sad, depressed, scared.""")
+    toned_down_emotion_of_part: str = Field("", description = """Take the emotion of the part and then tone it down. For example turn angry into frustrated, and sad into upset or feeling down.""")
+    wants_to_care_for_part: bool = Field("", description = """Does the user desire to care for the part.""")
+    shared_feelings: bool = Field("", description = """Did the user share compassion towards the part.""")
+    shared_feelings_description: str = Field("", description = """How did the user share compassion towards the part.""")

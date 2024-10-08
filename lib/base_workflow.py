@@ -10,12 +10,13 @@ from domain.store import clients
 
 class WField(BaseModel):
     prompt: str
-    skip: Optional[Callable] = ...
+    skip: Optional[Callable] = None
     then: Optional[Callable] = None
     invoked: int = 0
 
 
 class BaseWorkflow(BaseModel):
+
     def next_message_prompt():
         return ChatPromptTemplate.from_messages(
         [("system", system_message),
@@ -35,11 +36,12 @@ class BaseWorkflow(BaseModel):
         """Iterate through fields.  If skip function not satisfied, then it's the next step."""
         for field, attrs in self.steps().items():
             if not attrs['skip'](self):
+                message = getattr(self, field) # call next step
                 if attrs.get('then'):
-                    
                     image_obj = attrs['then'](self)
+                    print('running image generation from next step')
                     asyncio.create_task(image_obj.run(self.session, clients))
-                return getattr(self, field) # call next step
+                return message
                 
     @property
     def model(self):
