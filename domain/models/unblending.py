@@ -9,5 +9,4 @@ class Unblending(BaseModel):
     agreed_can_step_back: bool = Field(False, description = """Did the user agree to take a step back from the part.""")
     feeling_to_part: str = Field("",
         description="Emotion or response towards the primary part")
-    achieved_unblending: bool = Field(False, description = """This is related to the feeling to part unblending
-    Achieved unblending if feels compassion, warmth or acceptance towards the part.""")
+    achieved_unblending: bool = Field(False, description = """A person has acheived unblending if the user feels compassion, warmth or acceptance towards the part.""")

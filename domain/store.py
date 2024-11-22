@@ -12,6 +12,7 @@ def add_session_to_store(session):
     if session.user_id not in store:
         store[session.user_id] = {}
     store[session.user_id][session.session_id] = session
+    return session
 
 def get_session_history(user_id: str, session_id: str = '') -> BaseChatMessageHistory:
     return store.get(user_id, {}).get(session_id, {}).get('history', None)

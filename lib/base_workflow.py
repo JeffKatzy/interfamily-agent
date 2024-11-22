@@ -3,12 +3,11 @@ from typing import Callable, Optional
 
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from pydantic import BaseModel
-
 from domain.prompt import system_message
 from domain.store import clients
 
 
-class WField(BaseModel):
+class Step(BaseModel):
     prompt: str
     skip: Optional[Callable] = None
     then: Optional[Callable] = None
@@ -24,13 +23,13 @@ class BaseWorkflow(BaseModel):
         ("human", "suggested next question: {input}"),
         ])
 
-    def render_fields(self, preamble = ""):
-        indexed_prompts = [(i, v['prompt']) for i, v in enumerate(self.dict().values())]
+    def render_fields(self):
+        indexed_prompts = [(i, v['prompt']) for i, v in enumerate(self.model_dump().values())]
         return "\n".join([f"{i + 1}. {prompt}"
          for i, prompt in indexed_prompts])
 
     def steps(self):
-        return {field:attrs for field, attrs in self.dict().items() if field != 'session'}
+        return {field:attrs for field, attrs in self.model_dump().items() if field != 'session'}
 
     async def get_next_step(self):
         """Iterate through fields.  If skip function not satisfied, then it's the next step."""
@@ -48,7 +47,7 @@ class BaseWorkflow(BaseModel):
         return self._model
 
     def is_done(self):
-        for field, attrs in self.dict().items():
+        for field, attrs in self.model_dump().items():
             if attrs.get('skip') and not attrs['skip'](self):
                 return False
         return True

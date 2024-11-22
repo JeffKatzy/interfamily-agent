@@ -32,7 +32,7 @@ async def answer():
     async def generate_answer(user_id, session_id):
         start_time = time.time()
         prompt, next_message, session_id = await server.get_prompt_and_inputs(text_input, user_id, session_id)
-        print("dont getting prompt and inputs", session_id)
+        print("done getting prompt and inputs", session_id)
         first_chunk = True
         async for chunk in server.invoke_stream(prompt, next_message, user_id, session_id):
             if first_chunk:
@@ -50,7 +50,6 @@ async def sse():
     user_id = request.args.get('user_id')
     if not session_id:
         return jsonify({'error': 'session_id is required'}), 400
-    print(session_id)
     base_image.add_to_queue(session_id, clients)
 
     async def event_stream():

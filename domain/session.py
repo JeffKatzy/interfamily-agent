@@ -2,10 +2,10 @@ import uuid
 
 from langchain_community.chat_message_histories import ChatMessageHistory
 
-from domain.models import Part, Unblending, UserIntro
 from domain.store import add_session_to_store, get_session
-from domain.workflows import (PartWorkflow, UnblendingWorkflow,
-                              UserIntroWorkflow)
+from domain.workflows import (ExplorePartWorkflow, PartWorkflow,
+                              TransportPartWorkflow, UnblendingWorkflow,
+                              UnburdenPartWorkflow, UserIntroWorkflow)
 
 
 class Session:
@@ -44,22 +44,29 @@ class Session:
         self._workflows = workflows
         self._current_workflow = workflows and workflows[0]
         
-def start_new_session(user_id: str, session_id: str = "", workflows = []):
+def build_session(user_id: str, session_id: str = ""):
     session_id = session_id or str(uuid.uuid4())
-    unblending = Unblending()
-    
     session = Session(user_id, session_id, history = ChatMessageHistory())
-    unblending_workflow = UnblendingWorkflow(unblending, session = session)
-    session.workflows = [ UserIntroWorkflow(UserIntro(), session = session),
-                          unblending_workflow,
-                          PartWorkflow(Part(), session = session)
-                          ]
-    add_session_to_store(session)
+    return session
+
+def add_workflows_to_session(session, workflows):
+    session.workflows = [Workflow(session = session) for Workflow in workflows]
+    return session
+
+def setup_session(user_id: str, session_id: str = "", workflows = []):
+    if not workflows:
+        workflows = [ UserIntroWorkflow,UnblendingWorkflow,PartWorkflow,
+                    ExplorePartWorkflow, TransportPartWorkflow, 
+                    UnburdenPartWorkflow]
+    session = build_session(user_id, session_id)
+    session = add_workflows_to_session(session, workflows)
+    session = add_session_to_store(session)
     return session
 
 def find_or_create_session(user_id: str, session_id: str = ""):
     if session := get_session(user_id, session_id):
         if not session.ended:
             return session
-    return start_new_session(user_id, session_id)
-
+    else:
+        session = setup_session(user_id, session_id)
+        return session

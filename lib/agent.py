@@ -8,7 +8,6 @@ from domain.store import get_session, get_session_history
 
 load_dotenv()
 
-# fine_tune_model = "ft:gpt-4o-mini-2024-07-18:personal::A77fNj6o"
 model_id = "gpt-4o-2024-08-06"
 llm = ChatOpenAI(temperature=0, model=model_id, streaming=True)
 
@@ -18,7 +17,6 @@ def build_chain(prompt):
     str_chain = chain | StrOutputParser()
     return str_chain
         
-
 def build_runnable(chain, messages_key):
     return RunnableWithMessageHistory(
         chain,

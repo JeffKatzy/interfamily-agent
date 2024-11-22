@@ -19,12 +19,9 @@ class BaseImage(BaseModel):
     session: Any
 
     async def add_image_to_queue(self, session, clients, prompt):
-        print('running image generation', session.session_id, prompt)
         img_base64 = await self.build_image(prompt)
         data = json.dumps({"image": img_base64, "description": prompt})
-        print('putting data in queue', session.session_id)
         await clients[session.session_id].put(data)
-        
         return data
 
     async def build_image(self, prompt):
@@ -32,7 +29,10 @@ class BaseImage(BaseModel):
             raise ValueError('prompt is required')
         print('building image: ', prompt)
         start_time = time.time()
-        prompt = f"""For the following description, create a flat cartoon style image with a light blue background.  But keep all emotions very subtle.  Do not put any text in the image.  Description: {prompt}.  Keep all emotions subtle and slight."""
+        prompt = f"""For the following description, create a flat cartoon style image with a light blue background.
+        But keep all emotions very subtle.
+        Do not put any text in the image.  Description: {prompt}.
+        Keep all emotions subtle and slight."""
         url = "https://api.openai.com/v1/images/generations"
         headers = {
             "Authorization": f"Bearer {key}",
@@ -52,16 +52,12 @@ class BaseImage(BaseModel):
                 img_base64 = response_data['data'][0]['b64_json']
         end_time = time.time()  # End timing
         duration = end_time - start_time
-        print(f"Image generation took {duration:.2f} seconds.")
         return img_base64
 
 def add_to_queue(session_id, clients):
-    print('adding to queue', session_id)
     if session_id not in clients:
         clients[session_id] = asyncio.Queue()
 
 async def get_and_yield_message(session_id, clients):
-    print('listening for messages', session_id)
     message = await clients[session_id].get()
-    
     yield f"data: {message}\n\n"
