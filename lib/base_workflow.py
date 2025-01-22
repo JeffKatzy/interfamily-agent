@@ -3,6 +3,7 @@ from typing import Callable, Optional
 
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from pydantic import BaseModel
+
 from domain.prompt import system_message
 from domain.store import clients
 
@@ -35,12 +36,12 @@ class BaseWorkflow(BaseModel):
         """Iterate through fields.  If skip function not satisfied, then it's the next step."""
         for field, attrs in self.steps().items():
             if not attrs['skip'](self):
-                message = getattr(self, field) # call next step
+                step = getattr(self, field) # retrieve next step
                 if attrs.get('then'):
                     image_obj = attrs['then'](self)
                     print('running image generation from next step')
                     asyncio.create_task(image_obj.run(self.session, clients))
-                return message
+                return step
                 
     @property
     def model(self):
